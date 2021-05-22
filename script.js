@@ -1,12 +1,10 @@
 var mymap = L.map('turkey').setView([38.9637, 35.2433], 6.45);
 
-console.log(files);
-
-
 var bisi = get_stories();
 
 console.log(bisi);
 
+parse_city_deneme();
 
 const markerOptions = {
     riseOnHover: true,

@@ -6,6 +6,42 @@ async function get_cities(){
         });
 }
 
+
+function parse_city_data(data){
+  var rawCities = data.split(/\r?\n/);
+  var city_geojsons = [];
+  rawCities.forEach((row) => {
+      var city_name = row.slice(0, row.indexOf(','));
+      var city_geojson_raw = row.slice(row.indexOf(',') + 2, row.length-1).replace(new RegExp('\"\"', "g"), '\"');
+      var city_geojson = JSON.parse(city_geojson_raw);
+      city_geojsons.push(city_geojson);
+  });
+  return city_geojsons;
+}
+
+function get_cities_from_drive(handle_cities){
+  var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRiVRjUsxYLR6FVvxAuGckaZTIGPB12u_fbo5I6y51VfiKwPd84h3TYdZiXkU3V1lVQ0jN7w544sztK/pub?gid=0&single=true&output=csv';
+  // <DOCUMENTID> is the id of the spreadsheet that you want to get data from
+  $.ajax({
+    url: url,
+    success: function (data) {
+      var parsed_cities = parse_city_data(data);    
+      handle_cities(parsed_cities);
+    },
+    error: function (err) {
+      console.log(err.status);
+    }
+  });
+}
+
+function print_cities(cities){
+  cities.forEach(city => console.log(city));
+}
+
+function parse_city_deneme(){
+  return get_cities_from_drive(print_cities);
+}
+
 async function get_cities2(){
     return Promise.resolve({
         "type": "FeatureCollection",
@@ -655,5 +691,6 @@ async function get_cities2(){
 }
 
 function get_stories(){
+    var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdhUUk-O0JDTAAlkeY5dj9Qb_JjDComkvU7ntGnhnBfAcVlhlRVre2YkU9JSXK88e4ozpVkgKuqoj-/pub?gid=0&single=true&output=csv";
     return 'ahmet, istanbul, ...';
 }
