@@ -1,5 +1,40 @@
 var mymap = L.map('turkey').setView([38.9637, 35.2433], 6.45);
 
+console.log(files);
+
+
+var bisi = get_stories();
+
+console.log(bisi);
+
+
+const markerOptions = {
+    riseOnHover: true,
+    riseOffset: 300,
+    opacity: 0.5,
+    color: '#3ff8ff'
+};
+
+var citiesPromise = get_cities2();
+
+citiesPromise.then((cities, reject) => {
+    console.log(cities);
+    cities.features.forEach(feature => {
+        const domFeature = L.geoJSON(feature, markerOptions)
+        // .bindPopup(function (layer) {
+        //     console.log(layer.feature.properties.name);
+        //     return layer.feature.properties.name;
+        // })
+        .addTo(mymap);
+    
+        domFeature.addEventListener('click', function (e) {
+            console.log('clicked feature: ',feature);
+            console.log(e.target)
+    
+        });
+    });
+});
+
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWxwdHVnYW4iLCJhIjoiY2tveDh0ZzYwMGRsajJ1b2Fpd29iZ2pscyJ9.lqFVPlsptN65AaK6K790Tg', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
