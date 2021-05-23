@@ -1,11 +1,5 @@
 var mymap = L.map('turkey').setView([38.9637, 35.2433], 6.45);
 
-var bisi = get_stories();
-
-console.log(bisi);
-
-parse_city_deneme();
-
 const markerOptions = {
     riseOnHover: true,
     riseOffset: 300,
@@ -13,25 +7,28 @@ const markerOptions = {
     color: '#3ff8ff'
 };
 
-var citiesPromise = get_cities2();
 
-citiesPromise.then((cities, reject) => {
-    console.log(cities);
-    cities.features.forEach(feature => {
-        const domFeature = L.geoJSON(feature, markerOptions)
-        // .bindPopup(function (layer) {
-        //     console.log(layer.feature.properties.name);
-        //     return layer.feature.properties.name;
-        // })
+get_cities_from_drive((cities)=>{
+    var cityDict = {};
+    cities.forEach(city => {
+        const domFeature = L.geoJSON(city.geojson, markerOptions)
         .addTo(mymap);
-    
-        domFeature.addEventListener('click', function (e) {
-            console.log('clicked feature: ',feature);
-            console.log(e.target)
-    
+        cityDict[city.name] = domFeature;
+    });
+
+    get_stories_from_drive((stories) => {
+        console.log(stories);
+        stories.forEach(story=>{
+            var domFeature = cityDict[story.city];
+            if(domFeature){
+                domFeature.bindPopup(story.soundcloud_iframe);
+            }else{
+                console.error("city is not defined: " + story.city);
+            }
         });
     });
 });
+
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWxwdHVnYW4iLCJhIjoiY2tveDh0ZzYwMGRsajJ1b2Fpd29iZ2pscyJ9.lqFVPlsptN65AaK6K790Tg', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
