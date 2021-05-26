@@ -8,21 +8,21 @@ const markerOptions = {
 };
 
 
-get_cities_from_drive((cities)=>{
+get_cities_from_drive((cities) => {
     var cityDict = {};
     cities.forEach(city => {
         const domFeature = L.geoJSON(city.geojson, markerOptions)
-        .addTo(mymap);
+            .addTo(mymap);
         cityDict[city.name] = domFeature;
     });
 
     get_stories_from_drive((stories) => {
         console.log(stories);
-        stories.forEach(story=>{
+        stories.forEach(story => {
             var domFeature = cityDict[story.city];
-            if(domFeature){
+            if (domFeature) {
                 domFeature.bindPopup(story.soundcloud_iframe);
-            }else{
+            } else {
                 console.error("city is not defined: " + story.city);
             }
         });
@@ -30,21 +30,19 @@ get_cities_from_drive((cities)=>{
 });
 
 
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWxwdHVnYW4iLCJhIjoiY2tveDh0ZzYwMGRsajJ1b2Fpd29iZ2pscyJ9.lqFVPlsptN65AaK6K790Tg', {
+var gl = L.tileLayer('https://api.mapbox.com/styles/v1/alptugan/ckp5oyxuc0dob18rxny5dwy88/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWxwdHVnYW4iLCJhIjoiY2tveDh0ZzYwMGRsajJ1b2Fpd29iZ2pscyJ9.lqFVPlsptN65AaK6K790Tg', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
-    id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: 'pk.eyJ1IjoiYWxwdHVnYW4iLCJhIjoiY2tveDh0ZzYwMGRsajJ1b2Fpd29iZ2pscyJ9.lqFVPlsptN65AaK6K790Tg'
 }).addTo(mymap);
 
 
-
 // Source data 
 // the following line should be a json file that can act as a database of sound recordings
 var soundSrc = {
-    "src":[
+    "src": [
         "<iframe width='200' height='50' scrolling='no' frameborder='no' allow='autoplay' src='https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1009011010&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'></iframe><div style='font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;'><a href='https://soundcloud.com/alptugan' title='alptugan' target='_blank' style='color: #cccccc; text-decoration: none;'>alptugan</a> · <a href='https://soundcloud.com/alptugan/ambient-pre-fx-track-final-trackmixdown' title='Ambient Pre Fx Track Final Trackmixdown' target='_blank' style='color: #cccccc; text-decoration: none;'>Ambient Pre Fx Track Final Trackmixdown</a></div>",
         "<iframe width='200' height='50' scrolling='no' frameborder='no' allow='autoplay' src='https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/898200508&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true'></iframe><div style='font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;'><a href='https://soundcloud.com/alptugan' title='alptugan' target='_blank' style='color: #cccccc; text-decoration: none;'>alptugan</a> · <a href='https://soundcloud.com/alptugan/dasein-of-others' title='Dasein Of Others' target='_blank' style='color: #cccccc; text-decoration: none;'>Dasein Of Others</a></div>"
     ]
