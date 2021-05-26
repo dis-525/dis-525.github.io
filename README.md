@@ -1,22 +1,19 @@
-# dis-525.github.io
-
+# Artify the research web application
 Navigate to webpage -> [dis-525.github.io](https://dis-525.github.io/)
 
-to do:
----
+# Dercription
+
+
+# Documentation
+
+## To do:
 - [ ] Pop up window styling
 - [ ] World map styling
 - [ ] Mouse over effect on city regions
+- [x] ~~Soundcloud account~~
   
 
-
-
-
-Artify the research web page
----
-
-
-Importing google spreadsheet
+## Importing google spreadsheet 
 - Create google spreadsheet
 - Set share mode to public
 - Goto File->Publish to web
