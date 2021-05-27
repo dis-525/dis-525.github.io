@@ -8,7 +8,7 @@ Navigate to webpage -> [dis-525.github.io](https://dis-525.github.io/)
 
 ## To do:
 - [ ] Pop up window styling
-- [ ] Mouse over effect on city regions
+- [x] ~~Mouse over effect on city regions~~
 - [x] ~~World map styling~~
 - [x] ~~Soundcloud account~~
   
