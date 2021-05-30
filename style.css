@@ -3,16 +3,48 @@
 html,
 body {
     height: 100%;
-    margin: 0;
+    width: 100%;
+    padding: 0px !important;
+    margin: 0px !important;
 }
 
 #turkey {
     height: 100%;
     width: 100%;
-    z-index: 99;
+    padding: 0px !important;
+    margin: 0px !important;
 }
 
-#content {}
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
 
 
-/* MAPBOX STYLE *
+/* MAPBOX STYLE */
+
+#feature_infos {
+    width: 25%;
+    height: 25%;
+    background: rgba(255, 255, 255, 0.6);
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 5px;
+    border: 1px solid grey;
+    z-index: 999;
+}
+
+#info {
+    font-weight: bold;
+    color: red;
+}
