@@ -15,8 +15,7 @@ function parse_city_data(data){
 }
 
 function get_cities_from_drive(handle_cities){
-  var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRiVRjUsxYLR6FVvxAuGckaZTIGPB12u_fbo5I6y51VfiKwPd84h3TYdZiXkU3V1lVQ0jN7w544sztK/pub?gid=0&single=true&output=csv';
-  // <DOCUMENTID> is the id of the spreadsheet that you want to get data from
+  var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-Q9A_CsjIkZj4zgQZZFLKsSZIMSEXePIIZGFwQcJ7cnG2MtY4FetLz86Ikec3PdslSqotfvyxpb3d/pub?output=csv';
   $.ajax({
     url: url,
     success: function (data) {
@@ -38,9 +37,8 @@ function parse_story_data(data){
       city: columns[0],
       title: columns[1],
       author: columns[2],
-      thumbnail_url: columns[3],
-      description: columns[4],
-      soundcloud_iframe: columns[5].replace(new RegExp('\"\"', "g"), '\"')
+      description: columns[3],
+      soundcloud_iframe: columns[4].slice(1,columns[4].length-1).replace(new RegExp('\"\"', "g"), '\"')
     });
   });
 
@@ -48,7 +46,7 @@ function parse_story_data(data){
 }
 
 function get_stories_from_drive(handle_stories){
-    var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdhUUk-O0JDTAAlkeY5dj9Qb_JjDComkvU7ntGnhnBfAcVlhlRVre2YkU9JSXK88e4ozpVkgKuqoj-/pub?gid=0&single=true&output=csv";
+    var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR0ZitLWPXRrOsSOqMCH2_OP2fwYS2Mbe6_N5-sMPURcn9X5mQjcDyISH0iUBlblLRoOZJQF3micN2c/pub?output=csv";
     $.ajax({
       url: url,
       success: function (data) {

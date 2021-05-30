@@ -13,13 +13,18 @@ let author = "Name Surname";
 let desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
 let btnClose;
-let isShowContent;
+let isShowContent = false;
 let _feature;
 
 
 // STORY DICT
 var cityDict;
 
+
+var storyDict = {};
+var selectedCityName = undefined;
+
+var mainInfoDiv = undefined;
 
 
 // LEAFLET STARTS
@@ -45,14 +50,85 @@ const markerOptions = {
 var info = L.control();
 info.onAdd = function(map) {
     this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    mainInfoDiv = this._div;
     this.update();
     return this._div;
 };
 
-info.update = function(props) {
-    this._div.innerHTML = '<h4>Artified Research Recordings</h4>' + (props ?
-        '<b>' + props.name + '</b><br />' + props.author :
-        'Hover over a city');
+info.update = function(cityName) {
+    if(storyDict == undefined || storyDict[cityName] == undefined) return;
+
+    console.log(storyDict[cityName]);
+    var stories = storyDict[cityName];
+
+    if(mainInfoDiv != undefined && stories != undefined){
+        
+
+        var closeBtn = document.createElement("BUTTON");
+        closeBtn.innerHTML = "Click to close.";
+        closeBtn.id = 'close-button';
+
+        closeBtn.onclick = function () {
+            isShowContent = false;
+            selectedCityName = undefined;
+            clearInfo();
+            addDefaultInfo();
+        };
+        mainInfoDiv.appendChild(closeBtn);
+
+
+        let storiesDiv = document.createElement('div');
+        storiesDiv.id = 'stories-div';
+
+        let storiesTitle = document.createElement('p');
+        var storiesTitleText = document.createTextNode(cityName);
+        storiesTitle.appendChild(storiesTitleText);
+
+        storiesDiv.appendChild(storiesTitle);
+
+        stories.forEach((story)=>{
+            let storyDiv = document.createElement('div');
+            storyDiv.id = 'story-div';
+            
+            let titleDom = document.createElement('p');
+            titleDom.id = 'story-title-p';
+            var titleText = document.createTextNode(story.title);
+            titleDom.appendChild(titleText);
+            storyDiv.appendChild(titleDom);
+
+            let authorDom = document.createElement('p');
+            authorDom.id = 'author-p';
+            var authorText = document.createTextNode("Author(s); "+story.author);
+            authorDom.appendChild(authorText);
+            storyDiv.appendChild(authorDom);
+
+            console.log(story);
+            
+            //let thumbnailImg = document.createElement('IMG');
+            //thumbnailImg.setAttribute("src", thumbSrc + story.thumbnail_url);
+            //thumbnailImg.setAttribute("width", "304");
+            //thumbnailImg.setAttribute("height", "228");
+            //thumbnailImg.setAttribute("alt", "The Pulpit Rock");
+
+            //storyDiv.appendChild(thumbnailImg);
+
+            var soundCloudIFrame = document.createElement('div');
+            soundCloudIFrame.innerHTML = story.soundcloud_iframe.trim();
+            storyDiv.appendChild(soundCloudIFrame);
+
+            let descriptionDom = document.createElement('p');
+            descriptionDom.id = 'description-p';
+            var descriptionText = document.createTextNode(story.description);
+            descriptionDom.appendChild(descriptionText);
+            storyDiv.appendChild(descriptionDom);
+
+
+            storiesDiv.appendChild(storyDiv);
+        });
+
+        mainInfoDiv.appendChild(storiesDiv);
+    }
+    
 };
 
 info.addTo(mymap);
@@ -63,22 +139,12 @@ function onEachFeature(feature, layer) {
         mouseover: highlightFeature,
         mouseout: resetHighlight,
         click: onClickCity
-            /*click: function(e) {
-                document.getElementById("info").innerHTML = feature.properties.name;
-                $("#feature_infos").stop();
-                $("#feature_infos").fadeIn("fast");
-
-                console.log(feature.properties.name);
-                //$("#feature_infos").fadeOut(5000);
-                // This is your click handler. 
-                // Your feature is available here as e.target, and the 
-                //featureInfo object we added is available as e.target.featureInfo 
-            }*/
     });
 }
 
 // ON MOUSE OUT
 function resetHighlight(e) {
+    console.log("Reset highlight"); 
     var layer = e.target;
 
     layer.setStyle({
@@ -86,11 +152,38 @@ function resetHighlight(e) {
         fillOpacity: 0.5
     });
 
+
+    console.log(isShowContent);
+    if(isShowContent == undefined || !isShowContent){
+        clearInfo();
+        addDefaultInfo()
+    }
+
     info.update();
+}
+
+function clearInfo(){
+    if(mainInfoDiv == undefined) return;
+    while (mainInfoDiv.firstChild) {
+        mainInfoDiv.removeChild(mainInfoDiv.firstChild);
+    }
+}
+
+
+function addDefaultInfo(){
+    if(mainInfoDiv == undefined) return;
+    let defaultTitle = document.createElement('h3');
+    let defaultTitleText = document.createTextNode('Please select a city to listen stories.');
+    defaultTitle.appendChild(defaultTitleText);
+
+    mainInfoDiv.appendChild(defaultTitle);
 }
 
 // ON MOUSE OVER
 function highlightFeature(e) {
+    
+    selectedCityName = e.target.feature.properties.name;
+
     var layer = e.target;
 
     layer.setStyle({
@@ -104,32 +197,36 @@ function highlightFeature(e) {
         layer.bringToFront();
     }
 
-    info.update(layer.feature.properties);
+    if(isShowContent) return;
+    clearInfo();
+
+    info.update(selectedCityName);
 }
 
 function onClickCity(e) {
-
     isShowContent = true;
-    let thumbId = "1jOSKaYD5hWpgOMvBhejxewbsjwf7ORDv";
-    // Call related data
-    thumb = loadImage("test.jpg");
+    selectedCityName = e.target.feature.properties.name;
+    clearInfo();
+    info.update(selectedCityName);
 }
 // DATABASE RELATED
 get_cities_from_drive((cities) => {
     cityDict = {};
     cities.forEach(city => {
+        console.log(city);
         const domFeature = L.geoJSON(city.geojson, markerOptions)
             .addTo(mymap);
-        cityDict[city.name] = domFeature;
+        var cityName = city.geojson.properties.name;
+        cityDict[cityName] = domFeature;
+        if(storyDict[cityName] == undefined) storyDict[cityName] = [];
     });
 
     get_stories_from_drive((stories) => {
         // console.log(stories);
         stories.forEach(story => {
-            var domFeature = cityDict[story.city];
-            if (domFeature) {
-                domFeature.bindPopup(story.soundcloud_iframe);
-
+            if (cityDict[story.city] != undefined) {
+                if(storyDict[story.city] == undefined) storyDict[story.city] = [];
+                storyDict[story.city].push(story);
             } else {
                 console.error("city is not defined: " + story.city);
             }
@@ -137,85 +234,4 @@ get_cities_from_drive((cities) => {
     });
 });
 
-
-function setup() {
-    var cnv = createCanvas(innerWidth, innerHeight);
-    //Set canvas width/height
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    //Set canvas drawing area width/height
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    //Position canvas
-    canvas.style.position = 'absolute';
-    canvas.style.left = 0;
-    canvas.style.top = 0;
-    canvas.style.zIndex = 100000;
-    canvas.style.pointerEvents = 'none'; //Make sure you can click 'through' the canvas
-
-    //Draw rectangle
-}
-
-function draw() {
-    // draw fullscreen canvas 0 opacity
-    clear();
-    //
-    if (isShowContent) {
-
-        fill(0, 0, 0, 130);
-        noStroke();
-        rect(xPos, yPos, w, h, 10);
-
-        fill(255);
-        textSize(12);
-        let curYPos = yPos + 10;
-        text("Click to Close Window", xPos + 10, curYPos, w - 40, h);
-
-        // Display thumbnail
-        curYPos += 20;
-        image(thumb, xPos + 10, curYPos);
-
-        // Display author name
-        curYPos += thumb.height + 8;
-        fill('#cccccc');
-        textStyle(BOLD);
-        text("Author", xPos + 10, curYPos, w - 40, h);
-        fill('#ffffff');
-        textStyle(NORMAL);
-
-        curYPos += 15;
-        text(author, xPos + 10, curYPos, w - 40, h);
-
-        // Display title
-        curYPos += 20;
-        fill('#cccccc');
-        textStyle(BOLD);
-        text("Title", xPos + 10, curYPos, w - 15, h);
-        fill('#ffffff');
-        textStyle(NORMAL);
-        curYPos += 15;
-        text(title, xPos + 10, curYPos, w - 10, h);
-
-
-        // Display description
-        curYPos += 20;
-        fill('#cccccc');
-        textStyle(BOLD);
-        text("Description", xPos + 10, curYPos, w - 15, h);
-        fill('#ffffff');
-        textStyle(NORMAL);
-        curYPos += 15;
-        text(desc, xPos + 10, curYPos, w - 10, h);
-    }
-    //console.log(mouseX);
-}
-
-//callback fcn for button1
-function btnCloseClicked() {
-    //reset slider value to 200
-    isShowContent = false;
-}
-
-function mousePressed() {
-    isShowContent = false;
-}
+addDefaultInfo();

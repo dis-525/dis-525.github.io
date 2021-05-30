@@ -35,7 +35,7 @@ body {
 #feature_infos {
     width: 25%;
     height: 25%;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.6);
     position: absolute;
     top: 0px;
     right: 0px;
@@ -47,4 +47,14 @@ body {
 #info {
     font-weight: bold;
     color: red;
+}
+
+#story-div{
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#stories-div{
+    background: rgba(255, 255, 255, 0.1);
+    overflow-y:scroll;
+    height: 100vh;
 }
