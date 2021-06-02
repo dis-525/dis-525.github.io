@@ -16,6 +16,8 @@ let btnClose;
 let isShowContent = false;
 let _feature;
 
+// Markers
+var markers = [];
 
 // STORY DICT
 var cityDict;
@@ -26,9 +28,19 @@ var selectedCityName = undefined;
 
 var mainInfoDiv = undefined;
 
+var greenIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [15, 26],
+    iconAnchor: [2, 21],
+    popupAnchor: [1, -24],
+    shadowSize: [21, 26]
+});
 
 // LEAFLET STARTS
 var mymap = L.map('turkey').setView([38.9637, 35.2433], 6.45);
+markers[0] = L.marker([23.87767555995429, 90.35087585449219], { icon: greenIcon }).addTo(mymap);
+
 
 // MAP STYLING OVER MAPBOX UI
 L.tileLayer('https://api.mapbox.com/styles/v1/alptugan/ckp5oyxuc0dob18rxny5dwy88/tiles/512/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWxwdHVnYW4iLCJhIjoiY2tveDh0ZzYwMGRsajJ1b2Fpd29iZ2pscyJ9.lqFVPlsptN65AaK6K790Tg', {
@@ -56,19 +68,20 @@ info.onAdd = function(map) {
 };
 
 info.update = function(cityName) {
-    if(storyDict == undefined || storyDict[cityName] == undefined) return;
+    if (storyDict == undefined || storyDict[cityName] == undefined) return;
 
     console.log(storyDict[cityName]);
     var stories = storyDict[cityName];
 
-    if(mainInfoDiv != undefined && stories != undefined){
-        
+    if (mainInfoDiv != undefined && stories != undefined) {
 
-        var closeBtn = document.createElement("BUTTON");
-        closeBtn.innerHTML = "Click to close.";
+        // Create close button. Styling in css
+        var closeBtn = document.createElement("a");
+        //closeBtn.innerHTML = "Click to close.";
         closeBtn.id = 'close-button';
+        closeBtn.className = 'close';
 
-        closeBtn.onclick = function () {
+        closeBtn.onclick = function() {
             isShowContent = false;
             selectedCityName = undefined;
             clearInfo();
@@ -76,20 +89,22 @@ info.update = function(cityName) {
         };
         mainInfoDiv.appendChild(closeBtn);
 
-
+        // Div container
         let storiesDiv = document.createElement('div');
         storiesDiv.id = 'stories-div';
 
+        // p - City name
         let storiesTitle = document.createElement('p');
+        storiesTitle.id = 'stories-city-p';
         var storiesTitleText = document.createTextNode(cityName);
         storiesTitle.appendChild(storiesTitleText);
 
         storiesDiv.appendChild(storiesTitle);
 
-        stories.forEach((story)=>{
+        stories.forEach((story) => {
             let storyDiv = document.createElement('div');
             storyDiv.id = 'story-div';
-            
+
             let titleDom = document.createElement('p');
             titleDom.id = 'story-title-p';
             var titleText = document.createTextNode(story.title);
@@ -98,12 +113,18 @@ info.update = function(cityName) {
 
             let authorDom = document.createElement('p');
             authorDom.id = 'author-p';
-            var authorText = document.createTextNode("Author(s); "+story.author);
+
+            var span = document.createElement('span');
+            span.id = 'author-p-span';
+            var authorTit = document.createTextNode("Author(s); ");
+            var authorText = document.createTextNode(story.author);
+            span.appendChild(authorTit);
+            authorDom.appendChild(span);
             authorDom.appendChild(authorText);
             storyDiv.appendChild(authorDom);
 
-            console.log(story);
-            
+            //console.log(story);
+
             //let thumbnailImg = document.createElement('IMG');
             //thumbnailImg.setAttribute("src", thumbSrc + story.thumbnail_url);
             //thumbnailImg.setAttribute("width", "304");
@@ -128,7 +149,7 @@ info.update = function(cityName) {
 
         mainInfoDiv.appendChild(storiesDiv);
     }
-    
+
 };
 
 info.addTo(mymap);
@@ -144,7 +165,7 @@ function onEachFeature(feature, layer) {
 
 // ON MOUSE OUT
 function resetHighlight(e) {
-    console.log("Reset highlight"); 
+    console.log("Reset highlight");
     var layer = e.target;
 
     layer.setStyle({
@@ -154,7 +175,7 @@ function resetHighlight(e) {
 
 
     console.log(isShowContent);
-    if(isShowContent == undefined || !isShowContent){
+    if (isShowContent == undefined || !isShowContent) {
         clearInfo();
         addDefaultInfo()
     }
@@ -162,18 +183,18 @@ function resetHighlight(e) {
     info.update();
 }
 
-function clearInfo(){
-    if(mainInfoDiv == undefined) return;
+function clearInfo() {
+    if (mainInfoDiv == undefined) return;
     while (mainInfoDiv.firstChild) {
         mainInfoDiv.removeChild(mainInfoDiv.firstChild);
     }
 }
 
 
-function addDefaultInfo(){
-    if(mainInfoDiv == undefined) return;
+function addDefaultInfo() {
+    if (mainInfoDiv == undefined) return;
     let defaultTitle = document.createElement('h3');
-    let defaultTitleText = document.createTextNode('Please select a city to listen stories.');
+    let defaultTitleText = document.createTextNode('Please hover on a city to view stories. Click to on region to listen.');
     defaultTitle.appendChild(defaultTitleText);
 
     mainInfoDiv.appendChild(defaultTitle);
@@ -181,7 +202,7 @@ function addDefaultInfo(){
 
 // ON MOUSE OVER
 function highlightFeature(e) {
-    
+
     selectedCityName = e.target.feature.properties.name;
 
     var layer = e.target;
@@ -197,18 +218,20 @@ function highlightFeature(e) {
         layer.bringToFront();
     }
 
-    if(isShowContent) return;
+    if (isShowContent) return;
     clearInfo();
 
     info.update(selectedCityName);
 }
 
+// ON Click region
 function onClickCity(e) {
     isShowContent = true;
     selectedCityName = e.target.feature.properties.name;
     clearInfo();
     info.update(selectedCityName);
 }
+
 // DATABASE RELATED
 get_cities_from_drive((cities) => {
     cityDict = {};
@@ -218,14 +241,14 @@ get_cities_from_drive((cities) => {
             .addTo(mymap);
         var cityName = city.geojson.properties.name;
         cityDict[cityName] = domFeature;
-        if(storyDict[cityName] == undefined) storyDict[cityName] = [];
+        if (storyDict[cityName] == undefined) storyDict[cityName] = [];
     });
 
     get_stories_from_drive((stories) => {
         // console.log(stories);
         stories.forEach(story => {
             if (cityDict[story.city] != undefined) {
-                if(storyDict[story.city] == undefined) storyDict[story.city] = [];
+                if (storyDict[story.city] == undefined) storyDict[story.city] = [];
                 storyDict[story.city].push(story);
             } else {
                 console.error("city is not defined: " + story.city);

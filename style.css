@@ -16,12 +16,11 @@ body {
 }
 
 .info {
-    padding: 6px 8px;
+    padding: 0px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
     background: rgba(255, 255, 255, 0.8);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
+    border-radius: 5px 0px 0px 5px;
 }
 
 .info h4 {
@@ -29,11 +28,10 @@ body {
     color: #777;
 }
 
-
+info leaflet-control
 /* MAPBOX STYLE */
 
 #feature_infos {
-    width: 25%;
     height: 25%;
     background: rgba(0, 0, 0, 0.6);
     position: absolute;
@@ -49,12 +47,91 @@ body {
     color: red;
 }
 
-#story-div{
+
+/* CLOSE BUTTON */
+
+.close {
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    width: 24px;
+    height: 24px;
+    opacity: 0.3;
+}
+
+.close:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.close:before,
+.close:after {
+    position: absolute;
+    left: 11px;
+    content: ' ';
+    height: 25px;
+    width: 2px;
+    background-color: #333;
+}
+
+.close:before {
+    transform: rotate(45deg);
+}
+
+.close:after {
+    transform: rotate(-45deg);
+}
+
+#stories-city-p {
+    margin-top: 50px;
+    font-size: 2rem;
+    color: crimson;
+    font-weight: bold;
+}
+
+#story-title-p {
+    font-size: 1rem;
+    color: crimson;
+    opacity: 0.8;
+    font-weight: medium;
+}
+
+#author-p-span {
+    color: rgb(110, 110, 110);
+    font-weight: bold;
+}
+
+#author-p,
+#description-p {
+    margin-top: -10px;
+    font-size: 0.8rem;
+    color: rgb(71, 71, 71);
+}
+
+#description-p {
+    margin-top: 10px;
+}
+
+#story-div {
+    margin-top: 2.2rem;
     background: rgba(255, 255, 255, 0.1);
 }
 
-#stories-div{
+#stories-div {
     background: rgba(255, 255, 255, 0.1);
-    overflow-y:scroll;
+    overflow-y: scroll;
     height: 100vh;
+    margin-right: -8px;
+}
+
+.leaflet-top .leaflet-control {
+    margin-top: 0px !important;
+}
+
+.leaflet-control {
+    margin-right: 0px !important;
+}
+
+.leaflet-control h3 {
+    color: rgb(194, 54, 54) !important;
 }
