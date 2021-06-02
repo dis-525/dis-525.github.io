@@ -17,9 +17,10 @@ Navigate to webpage -> [dis-525.github.io](https://dis-525.github.io/)
 - [x] ~~World map styling~~
 - [x] ~~Soundcloud account~~
 - [ ] Disable mouse scrolling when multiple instance of stories occur on right side of the browser
-- [ ] Styling close button
-- [ ] Styling colors
-- [ ] Add pins for all location on the map 
+- [x] ~~Styling close button~~
+- [x] ~~Styling colors~~
+- [ ] Add pins for all location on the map.
+- [ ] Add click event all markers.
   
 
 ## Importing google spreadsheet 
