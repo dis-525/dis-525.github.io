@@ -1,7 +1,7 @@
 # Artify the research web application
 Navigate to webpage -> [dis-525.github.io](https://dis-525.github.io/)
 
-# Dercription
+# Description
 
 
 # Documentation
@@ -16,6 +16,10 @@ Navigate to webpage -> [dis-525.github.io](https://dis-525.github.io/)
 - [x] ~~Mouse over effect on city regions~~
 - [x] ~~World map styling~~
 - [x] ~~Soundcloud account~~
+- [ ] Disable mouse scrolling when multiple instance of stories occur on right side of the browser
+- [ ] Styling close button
+- [ ] Styling colors
+- [ ] Add pins for all location on the map 
   
 
 ## Importing google spreadsheet 
